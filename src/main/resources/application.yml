@@ -1,0 +1,22 @@
+app:
+  name: bacu
+  description: ${app.name} is a Spring Boot application
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root:password@localhost:8081/mongodb?authSource=admin
+  output:
+    ansi:
+      enabled: ALWAYS
+server:
+  error:
+    include-stacktrace: never
+    include-message: always
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    loggers:
+      enabled: false
+
