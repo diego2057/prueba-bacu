@@ -5,31 +5,24 @@ The following was discovered as part of building this project:
 
 # Getting Started
 
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.0.2/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.0.2/maven-plugin/reference/html/#build-image)
-* [Spring Reactive Web](https://docs.spring.io/spring-boot/docs/3.0.2/reference/htmlsingle/#web.reactive)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/3.0.2/reference/htmlsingle/#data.sql.jpa-and-spring-data)
-* [Spring Data R2DBC](https://docs.spring.io/spring-boot/docs/3.0.2/reference/htmlsingle/#data.sql.r2dbc)
-* [Spring Data Reactive Redis](https://docs.spring.io/spring-boot/docs/3.0.2/reference/htmlsingle/#data.nosql.redis)
-* [Resilience4J](https://docs.spring.io/spring-cloud-circuitbreaker/docs/current/reference/html/#configuring-resilience4j-circuit-breakers)
-
 ### Guides
-The following guides illustrate how to use some features concretely:
+The following guides illustrate how to deploy the appi on HEROKU:
 
-* [Building a Reactive RESTful Web Service](https://spring.io/guides/gs/reactive-rest-service/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Accessing data with R2DBC](https://spring.io/guides/gs/accessing-data-r2dbc/)
-* [Messaging with Redis](https://spring.io/guides/gs/messaging-redis/)
+* First you should create a heroku account [here](https://id.heroku.com/login)
+* Yuo can deploy mongo db on heroku or a other container of their preference, [here](https://www.mongodb.com/developer/products/atlas/use-atlas-on-heroku/) ou can see as deploy mongo on Heroku
+* Clone the repository from [here](https://github.com/diego2057/prueba-bacu)
+* Depending on the mongodb location you select, you should get the connection string and update it in the application.yml
+* Commit the above change
+* On Heroku go to deploy tab and download and install the HerokuCLI
+* Once HerokuCLI is installed you can login from the console of your IDE
+* Execute the follow command [heroku git:remote -a prueba-bacu]()
+* Execute the follow command [git push heroku master]()
+* Go to resources tab and open app. All done
 
-### Additional Links
-These additional references should also help you:
+## Test by Postman
 
-* [R2DBC Homepage](https://r2dbc.io)
-
-## Missing R2DBC Driver
-
-Make sure to include a [R2DBC Driver](https://r2dbc.io/drivers/) to connect to your database.
+You can test this api download the [Bacu ReservationAPI.postman_collection.json](Bacu%20ReservationAPI.postman_collection.json),
+here you can see three request:
+* GET http://localhost:8080/v1/reservations this return all reservations
+* GET http://localhost:8080/v1/reservations/{usuarioID} return a reservation record with id -> usuarioID
+* POST http://localhost:8080/v1/reservations create a reservation 

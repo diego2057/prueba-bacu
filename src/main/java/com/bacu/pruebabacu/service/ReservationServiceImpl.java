@@ -6,11 +6,10 @@ import com.bacu.pruebabacu.model.Reservation;
 import com.bacu.pruebabacu.repository.ReservationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.concurrent.atomic.AtomicReference;
+import org.springframework.web.server.ResponseStatusException;;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -23,43 +22,37 @@ public class ReservationServiceImpl implements ReservationService {
         this.mapper = mapper;
     }
     @Override
-    public Mono<Reservation> findById(String id) {
-        return repository.findById(id);
+    public ReservationDto findById(String id) {
+        return mapper.toDto(repository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                                "ERROR - Cliente " + id + " aun no tiene reserva")
+                )
+        );
     }
 
     @Override
-    public Mono<Object> save(ReservationDto reservationDto) {
-        Mono<Reservation> reservationByNumber = repository.findByReservation(reservationDto.getReservation());
-        Mono<Reservation> reservationById = repository.findById(reservationDto.getId());
-
-        AtomicReference<Reservation> byNumber = new AtomicReference<>();
-        AtomicReference<Reservation> byId = new AtomicReference<>();
-        reservationById.subscribe(reservation -> {
-            if(reservation != null){
-                byId.set(reservation);
-            }
-        });
-        reservationByNumber.subscribe(reservation -> {
-            if(reservation != null){
-                byNumber.set(reservation);
-            }
-        });
-        if(byId.get() != null){
+    public ReservationDto save(ReservationDto reservationDto) {
+        Optional<Reservation> reservationById = repository.findById(reservationDto.getId());
+        if(reservationById.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.UNPROCESSABLE_ENTITY,
                     "ERROR - " + reservationDto.getId() + " ya tiene reserva");
         }
-        if(byNumber.get() != null){
+
+        Optional<Reservation> reservationByNumber =
+                repository.findReservationByReservation(reservationDto.getReservation());
+        if(reservationByNumber.isPresent()){
             throw new ResponseStatusException(
                     HttpStatus.UNPROCESSABLE_ENTITY,
                     "ERROR - El número " + reservationDto.getReservation() + " ya esta reservado");
     }
-        return repository.save(mapper.toModel(reservationDto)).then(Mono.just(reservationDto));
+        return mapper.toDto(repository.save(mapper.toModel(reservationDto)));
 
     }
 
     @Override
-    public Flux<ReservationDto> index() {
-        return repository.findAll().map(mapper::toDto);
+    public List<ReservationDto> index() {
+        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 }

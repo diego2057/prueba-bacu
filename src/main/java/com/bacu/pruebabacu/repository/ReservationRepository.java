@@ -1,14 +1,15 @@
 package com.bacu.pruebabacu.repository;
 
 import com.bacu.pruebabacu.model.Reservation;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 
 @Repository
-public interface ReservationRepository extends ReactiveMongoRepository<Reservation, String> {
-    Flux<Reservation> findAll();
-    Mono<Reservation> findByReservation(int reservation);
+public interface ReservationRepository extends MongoRepository<Reservation, String> {
+
+    Optional<Reservation> findReservationByReservation(int reservation);
 }
